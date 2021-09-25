@@ -163,18 +163,21 @@ class Game():
         encrypt('saved_game.gachi', key)
 
     def load_game(self):
-        key = load_key()
-        decrypt('saved_game.gachi', key)
-        opened = set()
-        with open('saved_game.gachi', 'r') as f:
-            field = [list(map(int, f.readline().split())) for _ in range(int(f.readline()))]
-            for i in range(int(f.readline())):
-                opened.add(tuple(map(int, f.readline().split())))
-            flags = int(f.readline())
-        self.game_params['width'] = len(field[0])
-        self.game_params['height'] = len(field[0])
-        self.field.set_loaded_field(field, opened, flags)
-        encrypt('saved_game.gachi', key)
+        try:
+            key = load_key()
+            decrypt('saved_game.gachi', key)
+            opened = set()
+            with open('saved_game.gachi', 'r') as f:
+                field = [list(map(int, f.readline().split())) for _ in range(int(f.readline()))]
+                for i in range(int(f.readline())):
+                    opened.add(tuple(map(int, f.readline().split())))
+                flags = int(f.readline())
+            self.game_params['width'] = len(field[0])
+            self.game_params['height'] = len(field[0])
+            self.field.set_loaded_field(field, opened, flags)
+            encrypt('saved_game.gachi', key)
+        except FileNotFoundError:
+            print('Cохраненная игра не найдена будет запущена стандартная игра')
 
 
 print("формат команды: x y действие(Open или Flag). например: 1 1 Open")
